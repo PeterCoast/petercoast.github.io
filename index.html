@@ -154,39 +154,101 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-用Python爬取5000张手机高清壁纸" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/01/hello-world/">Hello World</a>
+      <a class="article-title" href="/2021/08/01/%E7%94%A8Python%E7%88%AC%E5%8F%965000%E5%BC%A0%E6%89%8B%E6%9C%BA%E9%AB%98%E6%B8%85%E5%A3%81%E7%BA%B8/">用Python爬取5000张手机高清壁纸</a>
     </h1>
   
 
         
-        <a href="/2021/08/01/hello-world/" class="archive-article-date">
-  	<time datetime="2021-07-31T16:39:41.712Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-01</time>
+        <a href="/2021/08/01/%E7%94%A8Python%E7%88%AC%E5%8F%965000%E5%BC%A0%E6%89%8B%E6%9C%BA%E9%AB%98%E6%B8%85%E5%A3%81%E7%BA%B8/" class="archive-article-date">
+  	<time datetime="2021-08-01T03:04:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-01</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+        <h2 id="数据源分析"><a href="#数据源分析" class="headerlink" title="数据源分析"></a>数据源分析</h2><h3 id="爬取目标"><a href="#爬取目标" class="headerlink" title="爬取目标"></a>爬取目标</h3><p>图片首页地址为：<code>https://www.3gbizhi.com/sjbz/index_1.html</code>，该网站壁纸质量不错，清晰度也非常好，重点是对爬虫也非常友善，试了几次，爬取速度都可以，因此大家应该把该网站用于学习目的。<br><a target="_blank" rel="noopener" href="https://img13.360buyimg.com/ddimg/jfs/t1/196629/23/15483/1547096/6102da0fEeeeda363/0823fa3b11b6a0c0.png">插图1.png</a>  </p>
+<h3 id="使用的-Python-模块"><a href="#使用的-Python-模块" class="headerlink" title="使用的 Python 模块"></a>使用的 Python 模块</h3><p>本次使用 <code>requests</code>，<code>re</code>，<code>threading</code>。  </p>
+<p><code>threading</code> 模块将在本案例中，进行分页多线程抓取。  </p>
+<h3 id="重点学习内容"><a href="#重点学习内容" class="headerlink" title="重点学习内容"></a>重点学习内容</h3><p>爬虫基本套路  </p>
+<p>多线程图片爬虫  </p>
+<p>通过小图获取大图  </p>
+<h3 id="列表页分析"><a href="#列表页分析" class="headerlink" title="列表页分析"></a>列表页分析</h3><p>分析列表的时候发现，该网站可以直接通过，修改列表页图片地址获取高清地址，有这样的技巧存在，就能大幅度减少爬虫代码编写量，具体如下  </p>
+<p>通过浏览器检查图片标签，获得如下图所示图片地址，即 <code>https://pic.3gbizhi.com/2020/1214/20201214112632727.jpg.476.780.jpg</code>  </p>
+<p>在浏览器中打开该地址，得到一张图片预览地址，去除 <code>.476.780</code> 相关内容，直接获取到大图地址，即 <code>https://pic.3gbizhi.com/2020/1214/20201214112632727.jpg</code><br><a target="_blank" rel="noopener" href="https://img10.360buyimg.com/ddimg/jfs/t1/186213/36/16377/524589/6102daf9E2bad3a16/19571f9b71630b3a.png">插图2.png</a><br>既然可以通过列表页直接获取大图地址，那针对该网站的爬取，直接通过列表页即可实现。下面就可以针对分析进行需求的整理工作  </p>
+<h2 id="整理需求如下"><a href="#整理需求如下" class="headerlink" title="整理需求如下"></a>整理需求如下</h2><ol>
+<li>爬取目标网站列表页；</li>
+<li>分析图片大图链接；</li>
+<li>请求图片，保存图片。  <h2 id="编码时间"><a href="#编码时间" class="headerlink" title="编码时间"></a>编码时间</h2>在上文针对列表页面进行了数据上的分析，接下来就可以对其进行代码编写了。  </li>
+</ol>
+<p>编写图片地址提取代码，该代码的重点在于，需要将图片地址后面的缩放进行处理，即下述代码 <code>url[:url.find(&#39;jpg&#39;)+3]</code> 部分内容，下文中的正则表达式部分需要特别注意，在网站上右键查看的源码与服务器返回的代码存在差异，测试时需针对服务器返回进行匹配。  </p>
+<p>下文代码中 <code>save_image</code> 在后文涉及。  </p>
+<pre><code class="python">import requests
+import re
+import threading
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+headers = &#123;
+    &quot;User-Agent&quot;: &quot;Mozilla/5.0 (Windows NT 6.1; Win64; x64) &quot;&#125;
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+# 循环获取 URL
+def get_image(base_url):
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+    res = requests.get(url=base_url, headers=headers)
+
+    if res is not None:
+        html = res.text
+            # 正则表达式提取数据
+            pattern = re.compile(
+                &#39;&lt;img lazysrc=&quot;(.*?)&quot; lazysrc2x=&quot;.*?&quot; width=&quot;221&quot; height=&quot;362&quot; alt=&quot;.*?&quot; title=&quot;(.*?)&quot;&#39;)
+            match_list = pattern.findall(html)
+            for url, title in match_list:
+                    # url 字符串进行处理，去除缩略图部分
+                    save_image(url[:url.find(&#39;jpg&#39;)+3], title)
+
+                print(match_list)
+</code></pre>
+<p>此时获取到的就是图片的真实地址，调用 <code>save_image</code> 函数，对远程图片进行存储。其中 <code>title</code> 为图片存储地址。  </p>
+<pre><code class="pythpn">def save_image(url, title):
+try:
+    print(f&quot;&#123;title&#125; - &#123;url&#125;&quot;)
+    res = requests.get(url=url, headers=headers)
+
+    if res is not None:
+        html = res.content
+
+        with open(f&quot;images/&#123;title&#125;.jpg&quot;, &quot;wb+&quot;) as f:
+            f.write(res.content)
+    except Exception as e:
+            print(e)
+</code></pre>
+<p>最后使用多线程进行爬取，开启 5 个线程，当所有线程结束运行时，停止整体代码。  </p>
+<pre><code class="python">if __name__ == &#39;__main__&#39;:
+    num = 0
+    # 最多开启5个线程
+    semaphore = threading.BoundedSemaphore(5)
+for index in range(189):
+    t = threading.Thread(target=get_image, args=(
+    f&quot;https://www.3gbizhi.com/sjbz/index_&#123;index&#125;.html&quot;,))
+    t.start()
+while threading.active_count() != 1:
+    pass
+else:
+    print(&#39;所有线程运行完毕&#39;)
+</code></pre>
+<p>运行我们的爬虫程序，会看到图片批量的存储到了本地。  </p>
+<h1 id="抓取结果展示时间"><a href="#抓取结果展示时间" class="headerlink" title="抓取结果展示时间"></a>抓取结果展示时间</h1><p>抓取到非常多优质的手机壁纸，换到手机不能用，都用不完了<br><a target="_blank" rel="noopener" href="https://img13.360buyimg.com/ddimg/jfs/t1/189566/25/15688/1072233/6102db53E7c61ed39/620382d373de4e2d.png">插图3.png</a>  </p>
+<h2 id="完整代码下载地址：main-py"><a href="#完整代码下载地址：main-py" class="headerlink" title="完整代码下载地址：main.py"></a>完整代码下载地址：<a href="./main.py">main.py</a></h2><p>代码编写过程中，顺手爬取了一堆图片，可以提前预览一波，看看图，在决定是否运行这段代码。</p>
+<h2 id="下载链接："><a href="#下载链接：" class="headerlink" title="下载链接："></a>下载链接：</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://ws28.cn/f/60sdbzsqqp1">3k张壁纸</a> 密码：1188</li>
+</ul>
 
       
 
@@ -199,7 +261,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/01/hello-world/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/08/01/%E7%94%A8Python%E7%88%AC%E5%8F%965000%E5%BC%A0%E6%89%8B%E6%9C%BA%E9%AB%98%E6%B8%85%E5%A3%81%E7%BA%B8/">展开全文 >></a>
         </p>
       
 

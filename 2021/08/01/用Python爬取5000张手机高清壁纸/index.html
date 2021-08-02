@@ -19,7 +19,7 @@
 <meta property="og:image" content="https://img10.360buyimg.com/ddimg/jfs/t1/186213/36/16377/524589/6102daf9E2bad3a16/19571f9b71630b3a.png">
 <meta property="og:image" content="https://img13.360buyimg.com/ddimg/jfs/t1/189566/25/15688/1072233/6102db53E7c61ed39/620382d373de4e2d.png">
 <meta property="article:published_time" content="2021-08-01T04:17:31.000Z">
-<meta property="article:modified_time" content="2021-08-01T17:19:22.273Z">
+<meta property="article:modified_time" content="2021-08-02T09:04:54.457Z">
 <meta property="article:author" content="PeterCoast">
 <meta property="article:tag" content="python">
 <meta property="article:tag" content="爬虫">
@@ -197,59 +197,11 @@ var _hmt = _hmt || [];
 </ol>
 <p>编写图片地址提取代码，该代码的重点在于，需要将图片地址后面的缩放进行处理，即下述代码 <code>url[:url.find(&#39;jpg&#39;)+3]</code> 部分内容，下文中的正则表达式部分需要特别注意，在网站上右键查看的源码与服务器返回的代码存在差异，测试时需针对服务器返回进行匹配。  </p>
 <p>下文代码中 <code>save_image</code> 在后文涉及。  </p>
-<pre><code class="python">import requests
-import re
-import threading
-
-
-headers = &#123;
-    &quot;User-Agent&quot;: &quot;Mozilla/5.0 (Windows NT 6.1; Win64; x64) &quot;&#125;
-
-# 循环获取 URL
-def get_image(base_url):
-
-    res = requests.get(url=base_url, headers=headers)
-
-    if res is not None:
-        html = res.text
-            # 正则表达式提取数据
-            pattern = re.compile(
-                &#39;&lt;img lazysrc=&quot;(.*?)&quot; lazysrc2x=&quot;.*?&quot; width=&quot;221&quot; height=&quot;362&quot; alt=&quot;.*?&quot; title=&quot;(.*?)&quot;&#39;)
-            match_list = pattern.findall(html)
-            for url, title in match_list:
-                    # url 字符串进行处理，去除缩略图部分
-                    save_image(url[:url.find(&#39;jpg&#39;)+3], title)
-
-                print(match_list)
-</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">headers = &#123;</span><br><span class="line">	<span class="string">&quot;User-Agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 6.1; Win64; x64) &quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 循环获取 URL</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_image</span>(<span class="params">base_url</span>):</span></span><br><span class="line"></span><br><span class="line">	res = requests.get(url=base_url, headers=headers)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> res <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">		html = res.text</span><br><span class="line">			<span class="comment"># 正则表达式提取数据</span></span><br><span class="line">			pattern = re.<span class="built_in">compile</span>(</span><br><span class="line">				<span class="string">&#x27;&lt;img lazysrc=&quot;(.*?)&quot; lazysrc2x=&quot;.*?&quot; width=&quot;221&quot; height=&quot;362&quot; alt=&quot;.*?&quot; title=&quot;(.*?)&quot;&#x27;</span>)</span><br><span class="line">			match_list = pattern.findall(html)</span><br><span class="line">			<span class="keyword">for</span> url, title <span class="keyword">in</span> match_list:</span><br><span class="line">					<span class="comment"># url 字符串进行处理，去除缩略图部分</span></span><br><span class="line">					save_image(url[:url.find(<span class="string">&#x27;jpg&#x27;</span>)+<span class="number">3</span>], title)</span><br><span class="line"></span><br><span class="line">				<span class="built_in">print</span>(match_list)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>此时获取到的就是图片的真实地址，调用 <code>save_image</code> 函数，对远程图片进行存储。其中 <code>title</code> 为图片存储地址。  </p>
-<pre><code class="pythpn">def save_image(url, title):
-try:
-    print(f&quot;&#123;title&#125; - &#123;url&#125;&quot;)
-    res = requests.get(url=url, headers=headers)
-
-    if res is not None:
-        html = res.content
-
-        with open(f&quot;images/&#123;title&#125;.jpg&quot;, &quot;wb+&quot;) as f:
-            f.write(res.content)
-    except Exception as e:
-            print(e)
-</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">def save_image(url, title):</span><br><span class="line">try:</span><br><span class="line">	print(f&quot;&#123;title&#125; - &#123;url&#125;&quot;)</span><br><span class="line">	res = requests.get(url=url, headers=headers)</span><br><span class="line"></span><br><span class="line">	if res is not None:</span><br><span class="line">		html = res.content</span><br><span class="line"></span><br><span class="line">		with open(f&quot;images/&#123;title&#125;.jpg&quot;, &quot;wb+&quot;) as f:</span><br><span class="line">			f.write(res.content)</span><br><span class="line">	except Exception as e:</span><br><span class="line">			print(e)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>最后使用多线程进行爬取，开启 5 个线程，当所有线程结束运行时，停止整体代码。  </p>
-<pre><code class="python">if __name__ == &#39;__main__&#39;:
-    num = 0
-    # 最多开启5个线程
-    semaphore = threading.BoundedSemaphore(5)
-for index in range(189):
-    t = threading.Thread(target=get_image, args=(
-    f&quot;https://www.3gbizhi.com/sjbz/index_&#123;index&#125;.html&quot;,))
-    t.start()
-while threading.active_count() != 1:
-    pass
-else:
-    print(&#39;所有线程运行完毕&#39;)
-</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">	num = <span class="number">0</span></span><br><span class="line">	<span class="comment"># 最多开启5个线程</span></span><br><span class="line">	semaphore = threading.BoundedSemaphore(<span class="number">5</span>)</span><br><span class="line"><span class="keyword">for</span> index <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">189</span>):</span><br><span class="line">	t = threading.Thread(target=get_image, args=(</span><br><span class="line">	<span class="string">f&quot;https://www.3gbizhi.com/sjbz/index_<span class="subst">&#123;index&#125;</span>.html&quot;</span>,))</span><br><span class="line">	t.start()</span><br><span class="line"><span class="keyword">while</span> threading.active_count() != <span class="number">1</span>:</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&#x27;所有线程运行完毕&#x27;</span>)</span><br></pre></td></tr></table></figure>
 <p>运行我们的爬虫程序，会看到图片批量的存储到了本地。  </p>
 <h1 id="抓取结果展示时间"><a href="#抓取结果展示时间" class="headerlink" title="抓取结果展示时间"></a>抓取结果展示时间</h1><p>抓取到非常多优质的手机壁纸，换到手机不能用，都用不完了<br><img src="https://img13.360buyimg.com/ddimg/jfs/t1/189566/25/15688/1072233/6102db53E7c61ed39/620382d373de4e2d.png" alt="插图3.png">  </p>
 <h2 id="完整代码下载地址：main-py"><a href="#完整代码下载地址：main-py" class="headerlink" title="完整代码下载地址：main.py"></a>完整代码下载地址：<a target="_blank" rel="noopener" href="https://github.com/PeterCoast/Python_code/blob/master/NO1/main.py">main.py</a></h2><p>代码编写过程中，顺手爬取了一堆图片，可以提前预览一波，看看图，在决定是否运行这段代码。</p>

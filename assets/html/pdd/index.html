@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;">
+        <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <title>拼多多套路演示</title>
+    </head>
+    <body id="body">
+        <div class="col-xs-12 col-sm-10 col-lg-8 center-block" style="float: none;">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <b>
+                        听哥一句劝，并夕夕的水很深，你把握不住
+                    </b>
+                </div>
+                <div class="panel-body">
+                    <button id="play" class="btn btn-primary" onclick="closePlay()" type="button">每日领现金</button>
+                    <div id="P_choujiang" style="display:none;">
+                        <div class="text-center text-primary">
+                            <b>请选择一个红包打开</b>
+                            <hr style="border-top:1px dashed #987cb9;" width="100%" color="#987cb9" size=1>
+                        </div>
+                        <div id="cj_1" style="display:inline;">
+                            <button onclick="cj_click()" type="button" class="btn">第一个红包</button>
+                        </div>
+                        <div id="cj_2" style="display:inline;">
+                            <button onclick="cj_click()" type="button" class="btn">第二个红包</button>
+                        </div>
+                        <div id="cj_3" style="display:inline;">
+                            <button onclick="cj_click()" type="button" class="btn">第三个红包</button>
+                        </div>
+                    </div>
+                    <div id="t1" style="display:none;">
+                        <span>恭喜你获得</span>
+                        <span id="money"></span>
+                        <span>元</span>
+                    </div>
+                    <div id="t2" style="display:none;">
+                        <span>仅差</span>
+                        <span id="shengyu"></span>
+                        <span>元提现了</span>
+                        <span style="color:#EEEEEE;">有机会</span>
+                    </div><br>
+                    <div id="t4" style="display:none;">
+                        <span>拉人头数：</span>
+                        <span id="nub">0</span>
+                    </div><br>
+                    <div id="t5" style="display:none;">
+                        <span>金币：</span>
+                        <span id="jinbi">0</span>
+                        <span class="pull-right">10金币可兑换0.01元</span>
+                        <hr>
+                    </div>
+                    <div id="t3" style="display:none;">
+                        <button class="btn btn-primary" id="lahaoyou" onclick="lahaoyou()" type="button">拉好友进行助力</button>
+                        <button class="btn btn-primary" id="over" onclick="over()" style="display:none;" type="button">提现到WX</button>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <p style="text-align:center">
+                        &copy; Powered by
+                        <a href="https://github.com/PeterCoast" target="_blank">
+                            PeterCoast
+                        </a>
+                    </p><hr>
+                    <p>友情链接：<a href="https://bhexo.cn/" target="_blank">PeterCoast的博客</a></p>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript" charset="utf-8">
+        function closePlay() {
+            document.getElementById('play').style.display = 'none';
+            document.getElementById('P_choujiang').style.display = 'inline';
+        }
+        function randomRange(min, max) {
+            return Math.floor(Math.random() * (max - min)) + min;
+        }
+        function cj_click() {
+            document.getElementById('P_choujiang').style.display = 'none';
+            document.getElementById('t1').style.display = 'inline';
+            var money = (randomRange(1,9)*100-randomRange(11,23)/100).toFixed(2);
+            document.getElementById('money').innerHTML = money;
+            var shengyu = (100-money.toString().split('.')[1])/100;
+            document.getElementById('t2').style.display = 'inline';
+            document.getElementById('shengyu').innerHTML = shengyu;
+            document.getElementById('t3').style.display = 'inline';
+            document.getElementById('t4').style.display = 'inline';
+            document.getElementById('t5').style.display = 'inline';
+        }
+        function lahaoyou() {
+            var shengyu = document.getElementById('shengyu');
+            var nub = document.getElementById('nub');
+            var money = document.getElementById('money');
+            var jinbi = document.getElementById('jinbi');
+            if(shengyu.innerHTML > 0.01) {
+                shengyu.innerHTML = (parseFloat(shengyu.innerHTML)-0.01).toFixed(2);
+                money.innerHTML = (parseFloat(money.innerHTML)+0.01).toFixed(2);
+                nub.innerHTML = parseInt(nub.innerHTML)+1;
+            } else if(jinbi.innerHTML < 9) {
+                jinbi.innerHTML++;
+                nub.innerHTML = parseInt(nub.innerHTML)+1;
+            } else if(jinbi.innerHTML < 9.9) {
+                jinbi.innerHTML = (parseFloat(jinbi.innerHTML)+0.1).toFixed(1);
+                nub.innerHTML = parseInt(nub.innerHTML)+1;
+            } else if(jinbi.innerHTML < 9.99) {
+                jinbi.innerHTML = (parseFloat(jinbi.innerHTML)+0.01).toFixed(2);
+                nub.innerHTML = parseInt(nub.innerHTML)+1;
+            } else if(jinbi.innerHTML < 10) {
+                jinbi.innerHTML = (parseFloat(jinbi.innerHTML)+0.01).toFixed(2);
+                nub.innerHTML = parseInt(nub.innerHTML)+1;
+                document.getElementById('lahaoyou').style.display = 'none';
+                document.getElementById('over').style.display = 'inline';
+            }
+        }
+        function over() {
+            window.alert('提现失败，感谢参与');
+            window.location.href = './index.html';
+            document.getElementById('body').style.display = 'none';
+        }
+    </script>
+</html>

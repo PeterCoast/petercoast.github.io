@@ -1,16 +1,21 @@
-<html>
-    <head>
+<html> 
+    <head> 
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width initial-scale=1"> 
+        <title>请点击右上角使用浏览器打开</title> 
         <script>
-function isTxbrowser() {
-    var ua = navigator.userAgent.toLowerCase();
-    return !! ua.match(/mqqbrowser|micromessenger|qzone|qqbrowser/i);
-}
-if(isTxbrowser()) {
-    location.href="./link.html";
-} else {
-    location.href="./videolist.html";
-}
-</script>
-    </head>
-    <body></body>
+        function isTxbrowser() {
+            var ua = navigator.userAgent.toLowerCase();
+            return !! ua.match(/mqqbrowser|micromessenger|qzone|qqbrowser/i);
+        }
+        if(isTxbrowser()) { } else {
+            location.href="./videolist.html";
+        }
+</script> 
+    </head> 
+    <body> 
+        <div> 
+            <p>请点击右上角使用浏览器打开网页 </p> 
+        </div>  
+    </body>
 </html>
